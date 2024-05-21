@@ -13,6 +13,8 @@ const modal = document.getElementById('modal') as HTMLDivElement;
 const editSecretKeyInput = document.getElementById('edit-secret-key') as HTMLInputElement;
 const saveSecretKeyBtn = document.getElementById('save-secret-key') as HTMLButtonElement;
 const closeBtn = document.getElementById('close') as HTMLSpanElement;
+const exportBtn = document.getElementById('export-btn')!;
+const importBtn = document.getElementById('import-btn') as HTMLInputElement;
 
 interface TOTPEntry {
     friendlyName: string;
@@ -70,6 +72,7 @@ function updateTOTPDisplay() {
             div.classList.add('visible');
         });
     });
+
 
     document.querySelectorAll('.delete-btn').forEach((btn, index) => {
         btn.addEventListener('click', () => {
@@ -152,6 +155,46 @@ form.addEventListener('submit', event => {
         secretKeyInput.value = '';
     }
 });
+
+exportBtn.addEventListener('click', () => {
+    const entries = getStoredTOTPs();
+    const json = JSON.stringify(entries);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'totps.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+});
+
+importBtn.addEventListener('change', () => {
+  const file = importBtn.files && importBtn.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+        const data = reader.result as string;
+        try {
+            const entries = JSON.parse(data);
+            if (Array.isArray(entries)) {
+                saveStoredTOTPs(entries);
+                updateTOTPDisplay();
+                alert('Tokens imported successfully!');
+            } else {
+                alert('Invalid JSON file format!');
+            }
+        } catch (error) {
+            console.error('Error parsing JSON file:', error);
+            alert('Error importing tokens!');
+        }
+    };
+    reader.readAsText(file);
+    importBtn.value = ''; // Reset the input field to allow importing the same file again
+  }
+});
+
 
 closeBtn.onclick = () => {
     modal.style.display = 'none';
