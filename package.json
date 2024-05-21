@@ -1,14 +1,14 @@
 {
-  "name": "totp-app",
+  "name": "totp-authenticator",
   "version": "1.0.0",
-  "description": "",
+  "description": "RFC-6283 TOTP Authenticator",
   "main": "index.js",
   "scripts": {
     "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "maskedpirate",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@types/node": "^20.12.12",
     "buffer": "^6.0.3",
