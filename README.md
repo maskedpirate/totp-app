@@ -3,6 +3,9 @@
 ## About
 An RFC 6238 TOTP authenticator. This can be used as a web application unlike apps like Google Authenticator.
 
+![Screenshot](example.png "Screenshot")
+
+
 ## Functionality
 - Add token
 - Edit token secret key
