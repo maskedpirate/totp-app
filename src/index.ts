@@ -39,17 +39,25 @@ function updateTOTPDisplay() {
     const div = document.createElement('div');
     div.className = 'token';
     div.innerHTML = `
-      <strong>${entry.friendlyName}:</strong> ${token}
+      <strong>${entry.friendlyName}</strong>
+      <span>${token}</span>
       <span class="delete-btn" data-index="${index}">&times;</span>
     `;
     totpList.appendChild(div);
+
+    // Trigger animation
+    requestAnimationFrame(() => {
+      div.classList.add('visible');
+    });
   });
 
   document.querySelectorAll('.delete-btn').forEach(btn => {
     btn.addEventListener('click', (event) => {
       const index = (event.target as HTMLElement).getAttribute('data-index');
       if (index !== null && confirm('Are you sure you want to delete this TOTP?')) {
-        deleteTOTP(parseInt(index));
+        const tokenDiv = (event.target as HTMLElement).parentElement as HTMLDivElement;
+        tokenDiv.classList.remove('visible');
+        setTimeout(() => deleteTOTP(parseInt(index)), 500); // Wait for animation to finish
       }
     });
   });

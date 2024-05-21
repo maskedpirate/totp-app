@@ -27,23 +27,53 @@
     }
     #totp-form {
       margin-bottom: 20px;
+      max-width: 600px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
     }
-    #totp-form input {
-      margin-right: 10px;
+    #totp-form input, #totp-form button {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1em;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    #totp-form input:focus, #totp-form button:focus {
+      border-color: #4caf50;
+      box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+    }
+    #totp-form button {
+      background-color: #4caf50;
+      color: white;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.3s;
+    }
+    #totp-form button:hover {
+      background-color: #45a049;
     }
     #totp-list {
       max-width: 600px;
-      margin: auto;
+      margin-left: 0;
     }
     .token {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto auto;
       align-items: center;
-      justify-content: space-between;
       background-color: #f9f9f9;
       padding: 10px;
       border: 1px solid #ddd;
       border-radius: 4px;
       margin-bottom: 10px;
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity 0.5s, transform 0.5s;
+    }
+    .token.visible {
+      opacity: 1;
+      transform: translateX(0);
     }
     .token strong {
       font-size: 1.2em;
