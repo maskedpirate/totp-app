@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOTP Generator</title>
+</head>
+<body>
+    <h1>TOTP Generator</h1>
+    <form id="totp-form">
+        <input type="text" id="friendly-name" placeholder="Friendly Name" required>
+        <input type="text" id="secret-key" placeholder="Secret Key" required>
+        <button type="submit">Add TOTP</button>
+    </form>
+    <div id="totp-list"></div>
+    <script src="bundle.js"></script>
+</body>
+</html>
+
