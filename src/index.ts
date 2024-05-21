@@ -23,14 +23,34 @@ function saveStoredTOTPs(entries: TOTPEntry[]) {
   localStorage.setItem('totp-entries', JSON.stringify(entries));
 }
 
+function deleteTOTP(index: number) {
+  const entries = getStoredTOTPs();
+  entries.splice(index, 1);
+  saveStoredTOTPs(entries);
+  updateTOTPDisplay();
+}
+
 function updateTOTPDisplay() {
   const entries = getStoredTOTPs();
   totpList.innerHTML = '';
-  entries.forEach(entry => {
+  entries.forEach((entry, index) => {
     const token = totp.generate(entry.secretKey);
     const div = document.createElement('div');
-    div.innerHTML = `<strong>${entry.friendlyName}:</strong> ${token}`;
+    div.className = 'token';
+    div.innerHTML = `
+      <strong>${entry.friendlyName}:</strong> ${token}
+      <span class="delete-btn" data-index="${index}">&times;</span>
+    `;
     totpList.appendChild(div);
+  });
+
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', (event) => {
+      const index = (event.target as HTMLElement).getAttribute('data-index');
+      if (index !== null && confirm('Are you sure you want to delete this TOTP?')) {
+        deleteTOTP(parseInt(index));
+      }
+    });
   });
 }
 

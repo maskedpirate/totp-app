@@ -1,19 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOTP Generator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TOTP Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    #totp-form {
+      margin-bottom: 20px;
+    }
+    #totp-form input {
+      margin-right: 10px;
+    }
+    .token {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #f9f9f9;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    .token strong {
+      font-size: 1.2em;
+      margin-right: 10px;
+    }
+    .delete-btn {
+      cursor: pointer;
+      color: red;
+      font-size: 1.2em;
+    }
+  </style>
 </head>
 <body>
-    <h1>TOTP Generator</h1>
-    <form id="totp-form">
-        <input type="text" id="friendly-name" placeholder="Friendly Name" required>
-        <input type="text" id="secret-key" placeholder="Secret Key" required>
-        <button type="submit">Add TOTP</button>
-    </form>
-    <div id="totp-list"></div>
-    <script src="bundle.js"></script>
+  <h1>TOTP Generator</h1>
+  <form id="totp-form">
+    <input type="text" id="friendly-name" placeholder="Friendly Name" required>
+    <input type="text" id="secret-key" placeholder="Secret Key" required>
+    <button type="submit">Add TOTP</button>
+  </form>
+  <div id="totp-list"></div>
+  <script src="bundle.js"></script>
 </body>
 </html>
-
