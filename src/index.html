@@ -12,11 +12,28 @@
     h1 {
       color: #333;
     }
+    #progress-container {
+      width: 100%;
+      background-color: #f3f3f3;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+    #progress-bar {
+      height: 20px;
+      background-color: #4caf50;
+      width: 100%;
+      border-radius: 4px;
+    }
     #totp-form {
       margin-bottom: 20px;
     }
     #totp-form input {
       margin-right: 10px;
+    }
+    #totp-list {
+      max-width: 600px;
+      margin: auto;
     }
     .token {
       display: flex;
@@ -41,6 +58,9 @@
 </head>
 <body>
   <h1>TOTP Generator</h1>
+  <div id="progress-container">
+    <div id="progress-bar"></div>
+  </div>
   <form id="totp-form">
     <input type="text" id="friendly-name" placeholder="Friendly Name" required>
     <input type="text" id="secret-key" placeholder="Secret Key" required>

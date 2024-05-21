@@ -8,6 +8,7 @@ const form = document.getElementById('totp-form') as HTMLFormElement;
 const friendlyNameInput = document.getElementById('friendly-name') as HTMLInputElement;
 const secretKeyInput = document.getElementById('secret-key') as HTMLInputElement;
 const totpList = document.getElementById('totp-list') as HTMLDivElement;
+const progressBar = document.getElementById('progress-bar') as HTMLDivElement;
 
 interface TOTPEntry {
   friendlyName: string;
@@ -54,6 +55,17 @@ function updateTOTPDisplay() {
   });
 }
 
+function updateProgressBar() {
+  const now = new Date();
+  const seconds = now.getSeconds();
+  const progress = ((30 - (seconds % 30)) / 30) * 100;
+  progressBar.style.width = `${progress}%`;
+
+  // Gradually decrease the progress bar width
+  const interval = 1000; // Update every second
+  setTimeout(updateProgressBar, interval);
+}
+
 function scheduleNextUpdate() {
   const now = new Date();
   const seconds = now.getSeconds();
@@ -84,3 +96,4 @@ form.addEventListener('submit', event => {
 // Initial display update and schedule the next update
 updateTOTPDisplay();
 scheduleNextUpdate();
+updateProgressBar();
