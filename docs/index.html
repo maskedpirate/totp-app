@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOTP Authenticator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Font Awesome for icons -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #progress-container {
+            width: 100%;
+            background-color: #f3f3f3;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            max-width: 600px;
+        }
+
+        #progress-bar {
+            height: 20px;
+            background-color: #4caf50;
+            width: 100%;
+            border-radius: 4px;
+        }
+
+        #totp-form {
+            margin-bottom: 20px;
+            max-width: 600px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        input,
+        button {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus,
+        button:focus {
+            border-color: #4caf50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #totp-list {
+            max-width: 600px;
+            margin-left: 0;
+        }
+
+        .token {
+            display: grid;
+            grid-template-columns: 1fr auto auto auto;
+            /* Updated to accommodate new button */
+            align-items: center;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .token.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .token strong {
+            font-size: 1.2em;
+            margin-right: 10px;
+        }
+
+        .edit-btn,
+        .delete-btn,
+        .copy-btn {
+            cursor: pointer;
+            font-size: 1.2em;
+            padding-left: 8px;
+        }
+
+        .copy-btn {
+            display: none;
+        }
+
+        .delete-btn {
+            color: red;
+        }
+
+        /* Add this CSS to style the modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            /* Adjust the gap between buttons */
+            margin-top: 40px;
+        }
+
+        /* Styles for the export button */
+        #export-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #4caf50;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Styles for the "Choose File" button */
+        .custom-file-upload {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .custom-file-upload span {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #4caf50;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            /* Apply cursor pointer */
+        }
+
+        .custom-file-upload span:hover {
+            background-color: #45a049;
+        }
+
+        .custom-file-upload input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>TOTP Authenticator</h1>
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+    <form id="totp-form" autocomplete="off">
+        <input type="text" id="friendly-name" placeholder="Friendly Name" required>
+        <input type="text" id="secret-key" placeholder="Secret Key" required>
+        <button type="submit">Add TOTP</button>
+    </form>
+    <div id="totp-list"></div>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span id="close" class="close">&times;</span> <!-- Ensure the close button has the correct class -->
+            <h2>Edit Secret Key</h2>
+            <input type="text" id="edit-secret-key" placeholder="New Secret Key" required>
+            <button id="save-secret-key">Save</button>
+        </div>
+    </div>
+
+
+    <div class="button-container">
+        <button id="export-btn">Export</button>
+        <label for="file-upload" class="custom-file-upload">
+            <span>Import</span>
+            <input type="file" id="import-btn" accept=".json">
+        </label>
+    </div>
+
+
+    <script src="bundle.js"></script>
+</body>
+
+</html>
